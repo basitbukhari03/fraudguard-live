@@ -38,10 +38,10 @@ const Register = () => {
         description: "Welcome to FraudGuard!",
       });
       navigate("/dashboard");
-    } catch {
+    } catch (err) {
       toast({
         title: "Registration Failed",
-        description: "Something went wrong. Please try again.",
+        description: err instanceof Error ? err.message : "Something went wrong. Please try again.",
         variant: "destructive",
       });
     } finally {

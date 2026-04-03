@@ -26,10 +26,10 @@ const Login = () => {
         description: "Welcome back to FraudGuard!",
       });
       navigate("/dashboard");
-    } catch {
+    } catch (err) {
       toast({
         title: "Login Failed",
-        description: "Invalid credentials. Please try again.",
+        description: err instanceof Error ? err.message : "Invalid credentials. Please try again.",
         variant: "destructive",
       });
     } finally {

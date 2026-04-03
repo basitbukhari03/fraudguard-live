@@ -1,4 +1,10 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  registerUser,
+  loginUser,
+  getCurrentUser,
+  removeToken,
+} from "@/services/auth";
 
 interface User {
   email: string;
@@ -8,6 +14,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
@@ -23,46 +30,44 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Load user from localStorage on mount
+  // Validate existing token on mount
   useEffect(() => {
-    const stored = localStorage.getItem("fraudguard_user");
-    if (stored) {
+    const checkAuth = async () => {
       try {
-        setUser(JSON.parse(stored));
+        const response = await getCurrentUser();
+        if (response?.user) {
+          setUser(response.user);
+        }
       } catch {
-        localStorage.removeItem("fraudguard_user");
+        // Token invalid or expired — clear it
+        removeToken();
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
+    checkAuth();
   }, []);
 
-  const login = async (email: string, _password: string) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    const userData: User = {
-      email,
-      name: email.split("@")[0],
-    };
-    setUser(userData);
-    localStorage.setItem("fraudguard_user", JSON.stringify(userData));
+  const login = async (email: string, password: string) => {
+    const response = await loginUser(email, password);
+    setUser(response.user);
   };
 
-  const register = async (name: string, email: string, _password: string) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    const userData: User = { email, name };
-    setUser(userData);
-    localStorage.setItem("fraudguard_user", JSON.stringify(userData));
+  const register = async (name: string, email: string, password: string) => {
+    const response = await registerUser(name, email, password);
+    setUser(response.user);
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("fraudguard_user");
+    removeToken();
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated: !!user, login, register, logout }}
+      value={{ user, isAuthenticated: !!user, isLoading, login, register, logout }}
     >
       {children}
     </AuthContext.Provider>
