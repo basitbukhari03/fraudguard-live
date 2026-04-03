@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const CTASection = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <section className="py-24 relative overflow-hidden">
       {/* Background Glow */}
@@ -26,7 +29,7 @@ const CTASection = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/register">
+            <Link to={isAuthenticated ? "/dashboard" : "/register"}>
               <Button variant="glow" size="xl" className="group">
                 Get Started Free
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />

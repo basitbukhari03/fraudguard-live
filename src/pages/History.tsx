@@ -11,29 +11,41 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CheckCircle, XCircle, Search, Download, Filter, Clock } from "lucide-react";
-
-// Demo data - will be replaced with actual API data
-const demoTransactions = [
-  { id: "1", txnId: "TXN001234", date: "2025-11-15", time: "14:32:00", amount: 250.00, prediction: "legitimate" as const, probability: 0.12, timestamp: "2024-01-15 14:32:45" },
-  { id: "2", txnId: "TXN001235", date: "2025-12-15", time: "15:45:00", amount: 5420.00, prediction: "fraud" as const, probability: 0.87, timestamp: "2024-01-15 15:45:12" },
-  { id: "3", txnId: "TXN001236", date: "2025-12-15", time: "16:20:00", amount: 89.99, prediction: "legitimate" as const, probability: 0.05, timestamp: "2024-01-15 16:20:33" },
-  { id: "4", txnId: "TXN001237", date: "2025-12-16", time: "09:15:00", amount: 3200.00, prediction: "fraud" as const, probability: 0.72, timestamp: "2024-01-16 09:15:18" },
-  { id: "5", txnId: "TXN001238", date: "2025-12-16", time: "11:00:00", amount: 45.50, prediction: "legitimate" as const, probability: 0.08, timestamp: "2024-01-16 11:00:55" },
-  { id: "6", txnId: "TXN001239", date: "2025-12-16", time: "14:22:00", amount: 1500.00, prediction: "legitimate" as const, probability: 0.23, timestamp: "2024-01-16 14:22:40" },
-  { id: "7", txnId: "TXN001240", date: "2025-12-17", time: "10:30:00", amount: 8900.00, prediction: "fraud" as const, probability: 0.91, timestamp: "2024-01-17 10:30:22" },
-  { id: "8", txnId: "TXN001241", date: "2025-12-17", time: "13:45:00", amount: 120.00, prediction: "legitimate" as const, probability: 0.15, timestamp: "2024-01-17 13:45:10" },
-];
+import { CheckCircle, XCircle, Search, Download, Filter, Clock, Trash2 } from "lucide-react";
+import { useTransactionHistory } from "@/contexts/TransactionHistoryContext";
 
 const History = () => {
+  const { transactions, clearHistory } = useTransactionHistory();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<"all" | "fraud" | "legitimate">("all");
 
-  const filteredTransactions = demoTransactions.filter((txn) => {
+  const filteredTransactions = transactions.filter((txn) => {
     const matchesSearch = txn.txnId.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter = filterType === "all" || txn.prediction === filterType;
     return matchesSearch && matchesFilter;
   });
+
+  const handleExportCSV = () => {
+    if (transactions.length === 0) return;
+    const headers = ["Transaction ID", "Date", "Time", "Amount", "Prediction", "Probability", "Analyzed At"];
+    const rows = transactions.map((txn) => [
+      txn.txnId,
+      txn.date,
+      txn.time,
+      txn.amount.toFixed(2),
+      txn.prediction,
+      (txn.probability * 100).toFixed(1) + "%",
+      txn.timestamp,
+    ]);
+    const csv = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `fraudguard_history_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -51,10 +63,18 @@ const History = () => {
                 Review all past fraud analysis results
               </p>
             </div>
-            <Button variant="outline" className="w-fit">
-              <Download className="h-4 w-4 mr-2" />
-              Export CSV
-            </Button>
+            <div className="flex gap-2">
+              {transactions.length > 0 && (
+                <Button variant="outline" className="w-fit" onClick={clearHistory}>
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Clear History
+                </Button>
+              )}
+              <Button variant="outline" className="w-fit" onClick={handleExportCSV} disabled={transactions.length === 0}>
+                <Download className="h-4 w-4 mr-2" />
+                Export CSV
+              </Button>
+            </div>
           </div>
 
           {/* Filters */}
@@ -99,7 +119,11 @@ const History = () => {
                 <Clock className="h-16 w-16 text-muted-foreground/30 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No Transactions Found</h3>
                 <p className="text-muted-foreground">
-                  {searchQuery ? "Try adjusting your search query" : "No transaction history yet"}
+                  {searchQuery
+                    ? "Try adjusting your search query"
+                    : transactions.length === 0
+                    ? "Analyze a transaction from the Dashboard to see it here"
+                    : "No transactions match the current filter"}
                 </p>
               </div>
             ) : (
@@ -165,7 +189,7 @@ const History = () => {
 
           {/* Stats Summary */}
           <div className="mt-6 text-center text-sm text-muted-foreground">
-            Showing {filteredTransactions.length} of {demoTransactions.length} transactions
+            Showing {filteredTransactions.length} of {transactions.length} transactions
           </div>
         </div>
       </main>

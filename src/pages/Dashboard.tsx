@@ -6,6 +6,7 @@ import PredictionResult from "@/components/dashboard/PredictionResult";
 import RecentTransactions from "@/components/dashboard/RecentTransactions";
 import { Activity, Shield, TrendingUp, AlertTriangle } from "lucide-react";
 import { useFraudPrediction } from "@/hooks/useFraudPrediction";
+import { useTransactionHistory } from "@/contexts/TransactionHistoryContext";
 import type { TransactionFormData } from "@/types/prediction";
 
 interface Transaction {
@@ -19,22 +20,35 @@ interface Transaction {
 
 const Dashboard = () => {
   const { isLoading, result: currentResult, error, predict } = useFraudPrediction();
+  const { addTransaction } = useTransactionHistory();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const handleSubmit = async (data: TransactionFormData) => {
     const result = await predict(data);
 
     if (result) {
-      // Add to session history
+      const now = new Date();
       const newTransaction: Transaction = {
         id: Date.now().toString(),
         txnId: result.txnId,
         amount: result.amount,
         prediction: result.prediction,
         probability: result.probability,
-        timestamp: new Date().toLocaleString(),
+        timestamp: now.toLocaleString(),
       };
       setTransactions((prev) => [newTransaction, ...prev]);
+
+      // Also save to persistent history
+      addTransaction({
+        id: newTransaction.id,
+        txnId: result.txnId,
+        date: data.date,
+        time: data.time,
+        amount: result.amount,
+        prediction: result.prediction,
+        probability: result.probability,
+        timestamp: now.toLocaleString(),
+      });
     }
   };
 

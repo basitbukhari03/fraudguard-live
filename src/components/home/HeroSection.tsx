@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Shield, ArrowRight, Zap, Lock, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const HeroSection = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Background Effects */}
@@ -33,7 +36,7 @@ const HeroSection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-            <Link to="/register">
+            <Link to={isAuthenticated ? "/dashboard" : "/register"}>
               <Button variant="hero" size="xl" className="group">
                 Start Detecting
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
