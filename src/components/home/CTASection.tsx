@@ -35,11 +35,13 @@ const CTASection = () => {
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link to="/dashboard">
-              <Button variant="outline" size="xl">
-                View Demo
-              </Button>
-            </Link>
+            {!isAuthenticated && (
+              <Link to="/dashboard">
+                <Button variant="outline" size="xl">
+                  View Demo
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>

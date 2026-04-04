@@ -42,11 +42,13 @@ const HeroSection = () => {
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link to="/dashboard">
-              <Button variant="heroOutline" size="xl">
-                Try Demo
-              </Button>
-            </Link>
+            {!isAuthenticated && (
+              <Link to="/dashboard">
+                <Button variant="heroOutline" size="xl">
+                  Try Demo
+                </Button>
+              </Link>
+            )}
           </div>
 
           {/* Stats Grid */}

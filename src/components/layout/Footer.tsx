@@ -1,4 +1,4 @@
-import { Shield, Github, Twitter, Linkedin } from "lucide-react";
+import { Shield, Github, Linkedin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -44,25 +44,29 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold text-foreground mb-4">Connect</h4>
             <div className="flex gap-3">
-              {[Github, Twitter, Linkedin].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="p-2 rounded-lg bg-secondary hover:bg-primary/10 hover:text-primary transition-all"
-                >
-                  <Icon className="h-5 w-5" />
-                </a>
-              ))}
+              <a
+                href="https://github.com/basitbukhari03/fraudguard-live"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-lg bg-secondary hover:bg-primary/10 hover:text-primary transition-all"
+              >
+                <Github className="h-5 w-5" />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/muhammadbasitofficial/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-lg bg-secondary hover:bg-primary/10 hover:text-primary transition-all"
+              >
+                <Linkedin className="h-5 w-5" />
+              </a>
             </div>
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-border/50 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="mt-8 pt-8 border-t border-border/50 text-center">
           <p className="text-sm text-muted-foreground">
-            © 2024 FraudGuard. Built with XGBoost ML Model.
-          </p>
-          <p className="text-sm text-muted-foreground">
-            Accuracy: <span className="text-primary font-mono">99.72%</span> | ROC-AUC: <span className="text-primary font-mono">0.981</span>
+            © 2026 FraudGuard. All rights reserved.
           </p>
         </div>
       </div>
