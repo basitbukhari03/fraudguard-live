@@ -6,7 +6,7 @@ import type {
 
 // Dev: uses Vite proxy (/api → localhost:5000)
 // Production: uses VITE_API_BASE env var pointing to Render backend
-const API_BASE = import.meta.env.VITE_API_BASE || "/api";
+const API_BASE = import.meta.env.VITE_API_BASE || "https://fraudguard-api-udbp.onrender.com";
 
 /**
  * Calls the Flask /predict endpoint with raw transaction data.

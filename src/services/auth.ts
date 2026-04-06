@@ -5,7 +5,7 @@
  * Now includes email verification (OTP) flow.
  */
 
-const API_BASE = import.meta.env.VITE_API_BASE || "/api";
+const API_BASE = import.meta.env.VITE_API_BASE || "https://fraudguard-api-udbp.onrender.com";
 
 // ── Token Management ────────────────────────────────────────────────
 
