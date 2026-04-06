@@ -3,9 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Shield, Mail, Lock, User, ArrowRight } from "lucide-react";
+import { Shield, Mail, Lock, User, ArrowRight, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
+import { registerUser, validateEmailDomain } from "@/services/auth";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -15,10 +15,20 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { register: registerUser } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Email domain validation
+    const emailError = validateEmailDomain(email.trim().toLowerCase());
+    if (emailError) {
+      toast({
+        title: "Invalid Email",
+        description: emailError,
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (password !== confirmPassword) {
       toast({
@@ -29,15 +39,25 @@ const Register = () => {
       return;
     }
 
+    if (password.length < 6) {
+      toast({
+        title: "Password too short",
+        description: "Password must be at least 6 characters.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      await registerUser(name, email, password);
+      await registerUser(name.trim(), email.trim().toLowerCase(), password);
       toast({
-        title: "Account Created",
-        description: "Welcome to FraudGuard!",
+        title: "Verification Code Sent",
+        description: "Please check your email for the 6-digit code.",
       });
-      navigate("/dashboard");
+      // Navigate to verify page with email
+      navigate("/verify", { state: { email: email.trim().toLowerCase() } });
     } catch (err) {
       toast({
         title: "Registration Failed",
@@ -99,13 +119,17 @@ const Register = () => {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder="you@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-10"
                   required
                 />
               </div>
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <Info className="h-3 w-3" />
+                Only Gmail, Outlook, Yahoo, iCloud, ProtonMail allowed
+              </p>
             </div>
 
             <div className="space-y-2">

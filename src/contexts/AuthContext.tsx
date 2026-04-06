@@ -1,9 +1,9 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import {
-  registerUser,
   loginUser,
   getCurrentUser,
   removeToken,
+  verifyEmail,
 } from "@/services/auth";
 
 interface User {
@@ -16,7 +16,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  verify: (email: string, code: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -55,8 +55,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(response.user);
   };
 
-  const register = async (name: string, email: string, password: string) => {
-    const response = await registerUser(name, email, password);
+  const verify = async (email: string, code: string) => {
+    const response = await verifyEmail(email, code);
     setUser(response.user);
   };
 
@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated: !!user, isLoading, login, register, logout }}
+      value={{ user, isAuthenticated: !!user, isLoading, login, verify, logout }}
     >
       {children}
     </AuthContext.Provider>

@@ -26,12 +26,20 @@ const Login = () => {
         description: "Welcome back to FraudGuard!",
       });
       navigate("/dashboard");
-    } catch (err) {
-      toast({
-        title: "Login Failed",
-        description: err instanceof Error ? err.message : "Invalid credentials. Please try again.",
-        variant: "destructive",
-      });
+    } catch (err: any) {
+      if (err?.unverified && err?.email) {
+        toast({
+          title: "Email Not Verified",
+          description: "Please verify your email first.",
+        });
+        navigate("/verify", { state: { email: err.email } });
+      } else {
+        toast({
+          title: "Login Failed",
+          description: err instanceof Error ? err.message : "Invalid credentials. Please try again.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
