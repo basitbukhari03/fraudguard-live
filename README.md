@@ -1,73 +1,138 @@
-# Welcome to your Lovable project
+# 🛡️ FraudGuard — AI-Powered Fraud Detection Platform
 
-## Project info
+**Live:** [https://fraudguard.live](https://fraudguard.live)
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+FraudGuard is a real-time fraud detection web application that uses machine learning to analyze financial transactions and predict fraudulent activity with high accuracy.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## ✨ Features
 
-**Use Lovable**
+- 🔍 **Real-Time Fraud Detection** — Analyze transactions instantly with AI
+- 🤖 **XGBoost ML Model** — Trained on real-world fraud patterns with 30+ engineered features
+- 📊 **Risk Scoring** — Get fraud probability percentages and risk level (Low/Medium/High)
+- 💡 **Risk Insights** — AI-generated explanations for why a transaction is suspicious
+- 📈 **Transaction History** — Track and filter all analyzed transactions
+- 🔐 **Secure Authentication** — JWT-based auth with email verification (OTP)
+- ✉️ **Email Verification** — Only verified emails (Gmail, Outlook, Yahoo, etc.) can register
+- 🌙 **Dark Theme UI** — Premium glassmorphism design with smooth animations
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🛠️ Tech Stack
 
-**Use your preferred IDE**
+### Frontend
+| Technology | Purpose |
+|-----------|---------|
+| **React** | UI Framework |
+| **TypeScript** | Type Safety |
+| **Vite** | Build Tool & Dev Server |
+| **Tailwind CSS** | Styling |
+| **shadcn/ui** | UI Components |
+| **React Router** | Client-side routing |
+| **React Query** | Server state management |
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Backend
+| Technology | Purpose |
+|-----------|---------|
+| **Flask (Python)** | REST API |
+| **XGBoost** | ML Fraud Detection Model |
+| **MongoDB Atlas** | User Database |
+| **Flask-Mail** | Email OTP Verification |
+| **JWT (PyJWT)** | Authentication Tokens |
+| **scikit-learn** | Feature Engineering Pipeline |
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Deployment
+| Service | Component |
+|---------|-----------|
+| **Vercel** | Frontend Hosting |
+| **Render** | Backend API Hosting |
+| **MongoDB Atlas** | Cloud Database |
 
-Follow these steps:
+---
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 📂 Project Structure
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+```
+src/
+├── components/ui/     # Reusable UI components (shadcn/ui)
+├── contexts/          # React Context providers
+│   ├── AuthContext.tsx           # Authentication state
+│   └── TransactionHistoryContext.tsx  # Transaction history
+├── hooks/             # Custom React hooks
+├── pages/             # Route pages
+│   ├── Index.tsx      # Landing page
+│   ├── Login.tsx      # Sign in
+│   ├── Register.tsx   # Sign up with email validation
+│   ├── Verify.tsx     # OTP email verification
+│   ├── Dashboard.tsx  # Main dashboard with prediction form
+│   └── History.tsx    # Transaction history with filters
+├── services/          # API integration
+│   ├── api.ts         # Fraud prediction API
+│   └── auth.ts        # Authentication + email verification API
+├── types/             # TypeScript interfaces
+└── App.tsx            # Root component with routes
+```
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+ and npm
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/basitbukhari03/fraudguard-live.git
+
+# Navigate to the project
+cd fraudguard-live
+
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be available at `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Environment Variables
 
-**Use GitHub Codespaces**
+Create a `.env` file in the root directory:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```env
+VITE_API_BASE=https://fraudguard-api-udbp.onrender.com
+```
 
-## What technologies are used for this project?
+---
 
-This project is built with:
+## 🔒 Authentication Flow
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+1. User registers with name, email, password
+2. Email domain validated (Gmail, Outlook, Yahoo, etc. only)
+3. 6-digit OTP sent to email
+4. User verifies OTP → Account activated
+5. JWT token issued → User logged in
+```
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## 📱 Mobile App
 
-## Can I connect a custom domain to my Lovable project?
+FraudGuard also has a **React Native + Expo** mobile app that connects to the same backend API.
 
-Yes, you can!
+See the [FraudGuardApp](../FraudGuardApp/) directory for the mobile app source code.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+---
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 📄 License
+
+This project is part of a university research project on fraud detection using machine learning.
+
+---
+
+**Built by [Muhammad Basit](https://github.com/basitbukhari03)** 🚀
